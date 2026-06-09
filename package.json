@@ -1,0 +1,18 @@
+{
+  "name": "date-time-checker-percy-java",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@percy/cli": "^1.31.14",
+    "@percy/cypress": "^3.1.8",
+    "cypress": "^15.16.0"
+  }
+}
