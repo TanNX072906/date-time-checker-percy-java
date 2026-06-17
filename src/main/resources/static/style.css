@@ -15,14 +15,14 @@ body {
 .app-container {
     background-color: #fff;
     border: 2px solid #ccc;
-    width: 500px;
+    width: 1px;
     padding: 30px;
     position: relative;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .close-btn {
-    position: fixed;
+    position: absolute;
     top: 5px;
     right: 5px;
     background-color: #e81123;
