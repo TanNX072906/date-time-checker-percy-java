@@ -22,7 +22,7 @@ body {
 }
 
 .close-btn {
-    position: absolute;
+    position: fixed;
     top: 5px;
     right: 5px;
     background-color: #e81123;
