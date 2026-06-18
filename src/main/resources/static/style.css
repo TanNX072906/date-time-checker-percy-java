@@ -15,7 +15,7 @@ body {
 .app-container {
     background-color: #fff;
     border: 2px solid #ccc;
-    width: 1px;
+    width: 500px;
     padding: 30px;
     position: relative;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -50,6 +50,7 @@ body {
 
 .logo {
     max-width: 250px;
+    rotate: 90deg;
     height: auto;
 }
 
