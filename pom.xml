@@ -40,6 +40,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Appium for Mobile Testing -->
+        <dependency>
+            <groupId>io.appium</groupId>
+            <artifactId>java-client</artifactId>
+            <version>9.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>4.18.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- JUnit 5 (Included in spring-boot-starter-test but keeping explicit if needed, 
              actually spring-boot-starter-test includes it so we can omit it, 
              but I will leave it clean without explicit junit jupiter dependencies since starter-test covers it) -->

@@ -6,7 +6,7 @@ A web application that helps users validate dates and check the number of days i
 - **API Testing**: REST Assured
 - **Performance Testing**: JMeter
 - **Web E2E Testing**: Cypress
-- **Mobile E2E Testing**: Cypress (Mobile Viewport)
+- **Mobile E2E Testing**: Appium (Android Emulator)
 - **Visual Regression Testing**: Percy
 - **AI-Assisted Testing**: GitHub Copilot
 - **CI/CD**: GitHub Actions
@@ -52,8 +52,8 @@ mvn jmeter:jmeter
 ```
 *Alternatively, you can run `mvn verify`, but ensure the application is running.*
 
-### 4. Web & Mobile E2E Tests (Cypress)
-We use **Cypress** to test the actual browser UI behavior on both Desktop and Mobile (iPhone X viewport). 
+### 4. Web E2E Tests (Cypress)
+We use **Cypress** to test the actual browser UI behavior on Desktop. 
 
 > **⚠️ IMPORTANT:** Ensure the Spring Boot server is running on `http://localhost:8080`.
 
@@ -65,9 +65,42 @@ npm install
 # Open Cypress
 npx cypress open
 ```
-*In the Cypress window, you can choose to run `datetime-checker.cy.js` (Web) or `mobile-datetime-checker.cy.js` (Mobile).*
+*In the Cypress window, you can choose to run `datetime-checker.cy.js`.*
 
-### 5. Visual Regression Tests (Percy)
+### 5. Mobile E2E Tests (Appium)
+We use **Appium** to test the web application on an Android Emulator running Chrome. Đây là phương pháp kiểm thử Mobile chuẩn mực công nghiệp theo kiến trúc Client-Server (Code Java -> Appium Server -> Máy ảo).
+
+> **⚠️ QUAN TRỌNG: CÁC BƯỚC SETUP & CHẠY TEST**
+> Do kiến trúc của Mobile Testing, bạn BẮT BUỘC phải cài đặt và chạy đủ các thành phần theo đúng thứ tự sau:
+>
+> **Bước 1: Bật ứng dụng Web (Web Server)**
+> Mở terminal trong IntelliJ và chạy: `mvn spring-boot:run`
+>
+> **Bước 2: Cài đặt và Bật Máy ảo (Android Emulator)**
+> Nếu chưa có máy ảo, hãy làm theo các bước sau:
+> 1. Tải và cài đặt **Android Studio** từ trang chủ Google.
+> 2. Mở Android Studio, tìm công cụ **Device Manager** (Quản lý thiết bị ảo).
+> 3. Bấm **Create Device**, chọn một mẫu điện thoại (VD: Pixel 6) -> Next.
+> 4. Chọn và tải một bản System Image (Hệ điều hành Android, VD: API 34 hoặc Tiramisu) -> Next -> Finish.
+> 5. Ở danh sách thiết bị, bấm nút **Play ▷** để khởi động chiếc điện thoại ảo vừa tạo và chờ đến khi màn hình chính (Home Screen) hiện lên hoàn tất.
+>
+> **Bước 3: Cài đặt Appium (Chỉ làm ở lần đầu tiên)**
+> Mở Command Prompt (cmd) và chạy lần lượt các lệnh sau:
+> 1. `npm install -g appium`
+> 2. `appium driver install uiautomator2`
+> 3. Cấu hình biến môi trường Android SDK:
+>    `setx ANDROID_HOME "C:\Users\<Tên_User>\AppData\Local\Android\Sdk"` (Thay `<Tên_User>` bằng tên user máy bạn, ví dụ: `Nguyen Xuan Tan`).
+>
+> **Bước 4: Khởi động Appium Server**
+> Mở một **cửa sổ cmd mới tinh** (để nhận biến môi trường vừa cài) và bật server với quyền tự động tải ChromeDriver:
+> `appium --allow-insecure uiautomator2:chromedriver_autodownload`
+> *(Thu nhỏ và giữ nguyên cửa sổ cmd này).*
+
+**Chạy Test:**
+Sau khi Web Server (Bước 1), Máy ảo (Bước 2) và Appium Server (Bước 4) đều đang chạy.
+Bạn hãy mở file `src/test/java/com/tannx/swt/mobile/AppiumMobileWebTest.java` trong IntelliJ, và bấm **nút Play màu xanh** ở cạnh hàm `@Test`. Điện thoại ảo sẽ tự động mở Chrome và thực hiện test nghiệm thu!
+
+### 6. Visual Regression Tests (Percy)
 We integrate **Percy** with Cypress to take visual snapshots of the application on both Desktop and Mobile views, checking for unexpected CSS/Layout changes.
 
 To run tests headlessly and send snapshots to the Percy dashboard:
@@ -80,7 +113,7 @@ To run tests headlessly and send snapshots to the Percy dashboard:
 npm run test:percy
 ```
 
-### 6. AI-Assisted Testing (GitHub Copilot)
+### 7. AI-Assisted Testing (GitHub Copilot)
 This project encourages the use of **AI-Assisted Testing** to speed up development and self-healing test automation.
 
 **How the team should use it:**
@@ -98,5 +131,5 @@ This project encourages the use of **AI-Assisted Testing** to speed up developme
 - **API Tests:** `src/test/java/com/tannx/swt/DateCheckerApiControllerTest.java`
 - **JMeter Test Plan:** `src/test/jmeter/DateTimeChecker_PerfTest.jmx`
 - **Desktop E2E & Percy:** `cypress/e2e/datetime-checker.cy.js`
-- **Mobile E2E & Percy:** `cypress/e2e/mobile-datetime-checker.cy.js`
+- **Mobile E2E (Appium):** `src/test/java/com/tannx/swt/mobile/AppiumMobileWebTest.java`
 - **CI/CD Pipeline:** `.github/workflows/ci.yml`
