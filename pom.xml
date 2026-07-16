@@ -33,6 +33,13 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- REST Assured for API testing -->
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+
         <!-- JUnit 5 (Included in spring-boot-starter-test but keeping explicit if needed, 
              actually spring-boot-starter-test includes it so we can omit it, 
              but I will leave it clean without explicit junit jupiter dependencies since starter-test covers it) -->
