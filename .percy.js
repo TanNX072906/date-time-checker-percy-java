@@ -29,8 +29,5 @@ if (executablePath) {
 }
 
 module.exports = {
-  version: 2,
-  discovery: {
-    executable: executablePath
-  }
+  version: 2
 };
