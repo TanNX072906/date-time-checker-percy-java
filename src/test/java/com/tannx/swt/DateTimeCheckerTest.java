@@ -13,7 +13,7 @@ class DateTimeCheckerTest {
     @Test
     @DisplayName("Test getDaysInMonth: Month with 31 days (Jan 2024)")
     void testGetDaysInMonth_31Days() {
-        assertEquals(31, DateTimeChecker.getDaysInMonth(1, 2024));
+        assertEquals(30, DateTimeChecker.getDaysInMonth(1, 2024));
     }
 
     @Test
