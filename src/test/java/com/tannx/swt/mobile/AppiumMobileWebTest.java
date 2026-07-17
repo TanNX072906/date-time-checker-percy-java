@@ -14,9 +14,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class AppiumMobileWebTest {
+
+    private static final int HOLD_BROWSER_SECONDS = Integer.getInteger("appium.holdSeconds", 3);
 
     private AndroidDriver driver;
     private WebDriverWait wait;
@@ -35,34 +39,79 @@ public class AppiumMobileWebTest {
 
     @Test
     public void testCheckDateOnMobileBrowser() {
+        openApp();
+        checkDate("29", "2", "2024");
+
+        WebElement modalMessage = assertModalContains("is correct date time!");
+        assertTrue(modalMessage.getText().contains("is correct date time!"));
+    }
+
+    @Test
+    public void testInvalidDayFormatOnMobileBrowser() {
+        openApp();
+        checkDate("abc", "12", "2024");
+
+        WebElement modalMessage = assertModalContains("Input data for Day is incorrect format!");
+        assertEquals("Input data for Day is incorrect format!", modalMessage.getText());
+    }
+
+    @Test
+    public void testDayInMonthModeOnMobileBrowser() {
+        openApp();
+        clickWithJavaScript(driver.findElement(By.id("switchModeBtn")));
+
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("appTitle"), "Day In Month Checker"));
+        assertFalse(driver.findElement(By.id("day")).isDisplayed());
+
+        driver.findElement(By.id("month")).sendKeys("2");
+        driver.findElement(By.id("year")).sendKeys("2024");
+        clickWithJavaScript(driver.findElement(By.id("checkBtn")));
+
+        WebElement modalMessage = assertModalContains("Month 2/2024 has 29 days.");
+        assertEquals("Month 2/2024 has 29 days.", modalMessage.getText());
+    }
+
+    private void openApp() {
         // Use 10.0.2.2 to access localhost of the host machine from Android Emulator
         driver.get("http://10.0.2.2:8080/");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("day")));
+    }
 
-        // Wait for page to load
-        WebElement dayInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("day")));
-        WebElement monthInput = driver.findElement(By.id("month"));
-        WebElement yearInput = driver.findElement(By.id("year"));
-        WebElement checkBtn = driver.findElement(By.id("checkBtn"));
+    private void checkDate(String day, String month, String year) {
+        driver.findElement(By.id("day")).sendKeys(day);
+        driver.findElement(By.id("month")).sendKeys(month);
+        driver.findElement(By.id("year")).sendKeys(year);
+        clickWithJavaScript(driver.findElement(By.id("checkBtn")));
+    }
 
-        dayInput.sendKeys("29");
-        monthInput.sendKeys("2");
-        yearInput.sendKeys("2024");
-        
-        // Use JavaScript click to avoid virtual keyboard overlapping the button
-        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", checkBtn);
-
-        // Wait for modal message to appear and verify text
+    private WebElement assertModalContains(String expectedText) {
         WebElement modalMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("modalMessage")));
-        // Need to wait until text content updates
-        wait.until(ExpectedConditions.textToBePresentInElement(modalMessage, "is correct date time!"));
-        
-        assertTrue(modalMessage.getText().contains("is correct date time!"));
+        wait.until(ExpectedConditions.textToBePresentInElement(modalMessage, expectedText));
+        return modalMessage;
+    }
+
+    private void clickWithJavaScript(WebElement element) {
+        // Use JavaScript click to avoid virtual keyboard overlapping the button
+        ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
     @AfterEach
     public void tearDown() {
         if (driver != null) {
+            holdBrowserBeforeQuit();
             driver.quit();
+        }
+    }
+
+    private void holdBrowserBeforeQuit() {
+        if (HOLD_BROWSER_SECONDS <= 0) {
+            return;
+        }
+
+        try {
+            Thread.sleep(Duration.ofSeconds(HOLD_BROWSER_SECONDS).toMillis());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 }
